@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150101103547) do
+ActiveRecord::Schema.define(version: 20150101105756) do
 
   create_table "boards", force: true do |t|
     t.integer  "game_id"
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 20150101103547) do
     t.integer  "x_coord"
     t.integer  "y_coord"
     t.integer  "z_coord"
+    t.string   "mark"
   end
 
   add_index "squares", ["board_id"], name: "index_squares_on_board_id"
