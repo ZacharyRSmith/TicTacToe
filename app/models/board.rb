@@ -3,19 +3,66 @@ class Board < ActiveRecord::Base
   has_many :squares
   serialize :squares_id_ary
 
+  def build_non_diag_lines(lines, coords_order)
+    for i in 0..self.size-1
+      for j in 0..self.size-1
+        line = []
+        for k in 0..self.size-1
+          case coords_order[0]
+          when "i"
+            if (coords_order[1] == "j")
+              line << self.squares_id_ary[i][j][k]
+            else
+              line << self.squares_id_ary[i][k][j]
+            end
+          when "j"
+            if (coords_order[1] == "i")
+              line << self.squares_id_ary[j][i][k]
+            else
+              line << self.squares_id_ary[j][k][i]
+            end
+          when "k"
+            if (coords_order[1] == "i")
+              line << self.squares_id_ary[k][i][j]
+            else
+              line << self.squares_id_ary[k][j][i]
+            end
+          end
+        end
+        lines << line
+      end
+    end
+    lines
+  end
+
+  def build_non_diag_lines_hardcode(lines)
+    for x_coord in 0..self.size-1
+      for y_coord in 0..self.size-1
+        hill = []
+        for z_coord in 0..self.size-1
+          hill << self.squares_id_ary[x_coord][y_coord][z_coord]
+        end
+        lines << hill
+      end
+    end
+    lines
+  end
+
   def gen_lines
     lines = []
 
     # COLUMNS:
-    for x_coord in 0..self.size-1
-      for z_coord in 0..self.size-1
-        column = []
-        for y_coord in 0..self.size-1
-          column << self.squares_id_ary[x_coord][y_coord][z_coord]
-        end
-        lines << column
-      end
-    end
+    lines = self.build_non_diag_lines(lines, ["i", "k"])
+    
+#     for x_coord in 0..self.size-1
+#       for z_coord in 0..self.size-1
+#         column = []
+#         for y_coord in 0..self.size-1
+#           column << self.squares_id_ary[x_coord][y_coord][z_coord]
+#         end
+#         lines << column
+#       end
+#     end
 
     # ROWS:
     for y_coord in 0..self.size-1
@@ -29,6 +76,7 @@ class Board < ActiveRecord::Base
     end
 
     # HILLS:
+#     self.build_non_diag_lines(["x"])
     for x_coord in 0..self.size-1
       for y_coord in 0..self.size-1
         hill = []

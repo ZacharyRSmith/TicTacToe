@@ -1,7 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  game_id: 
+<% b = Board.create!({ size: 2 }) %>
+<% b.gen_squares_id_ary() %>
+b:
+  id: <%= b.id %>
+  size: <%= b.size %>
+  squares_id_ary: <%= b.squares_id_ary %>
 
 two:
   game_id: 
