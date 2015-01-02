@@ -1,2 +1,13 @@
 <h1>Boards#index</h1>
-<p>Find me in app/views/boards/index.html.erb</p>
+
+<% @lyrs.each do |lyr| %>
+  <div class="layer">
+  <% lyr.each do |row| %>
+    <div class="row">
+    <% row.each do |square_id| %>
+      <div class='square'><%= @board.squares.find(square_id).mark %></div>
+      <% end %>
+    </div>
+    <% end %>
+  </div>
+<% end %>

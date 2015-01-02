@@ -129,7 +129,7 @@ class Board < ActiveRecord::Base
     self.squares_id_ary
   end
 
-  def render
+  def init_lyrs_ary
     lyrs = []
     for x in 0..self.size-1
       for y in 0..self.size-1
@@ -140,19 +140,19 @@ class Board < ActiveRecord::Base
         end
       end
     end
-
-    html = ''
-    lyrs.each do |lyr|
-      html << '<div class="layer">'
-      lyr.each do |row|
-        html << '<div class="row">'
-        row.each do |square_id|
-          html << "<div class='square'>#{self.squares.find(square_id).mark}</div>"
-        end
-        html << '</div>'
-      end
-      html << '</div>'
-    end
-    html
+    lyrs
+#     html = ''
+#     lyrs.each do |lyr|
+#       html << '<div class="layer">'
+#       lyr.each do |row|
+#         html << '<div class="row">'
+#         row.each do |square_id|
+#           html << "<div class='square'>#{self.squares.find(square_id).mark}</div>"
+#         end
+#         html << '</div>'
+#       end
+#       html << '</div>'
+#     end
+#     html
   end
 end
