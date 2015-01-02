@@ -155,24 +155,4 @@ class Board < ActiveRecord::Base
     end
     html
   end
-  
-#     renderGrid:function() {
-#     var htmlStr = '<div id="grid">';
-#     this.grid.forEach(function(col) {
-#       htmlStr = htmlStr + '<div class="col">';
-
-#       var rowHtmlStr = '';
-#       col.forEach(function(cell) {
-#         if (cell.isDiscovered === true) {
-#           rowHtmlStr = cell.view + rowHtmlStr;
-#         } else {
-#           rowHtmlStr = cell.viewUndiscovered + rowHtmlStr;
-#         }
-#       });
-#       htmlStr = htmlStr + rowHtmlStr + '</div>';
-#     });
-#     htmlStr = htmlStr + '</div>';
-
-#     $('div#content').html(htmlStr);
-#   }
 end
