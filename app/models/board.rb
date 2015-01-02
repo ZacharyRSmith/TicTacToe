@@ -3,66 +3,19 @@ class Board < ActiveRecord::Base
   has_many :squares
   serialize :squares_id_ary
 
-  def build_non_diag_lines(lines, coords_order)
-    for i in 0..self.size-1
-      for j in 0..self.size-1
-        line = []
-        for k in 0..self.size-1
-          case coords_order[0]
-          when "i"
-            if (coords_order[1] == "j")
-              line << self.squares_id_ary[i][j][k]
-            else
-              line << self.squares_id_ary[i][k][j]
-            end
-          when "j"
-            if (coords_order[1] == "i")
-              line << self.squares_id_ary[j][i][k]
-            else
-              line << self.squares_id_ary[j][k][i]
-            end
-          when "k"
-            if (coords_order[1] == "i")
-              line << self.squares_id_ary[k][i][j]
-            else
-              line << self.squares_id_ary[k][j][i]
-            end
-          end
-        end
-        lines << line
-      end
-    end
-    lines
-  end
-
-  def build_non_diag_lines_hardcode(lines)
-    for x_coord in 0..self.size-1
-      for y_coord in 0..self.size-1
-        hill = []
-        for z_coord in 0..self.size-1
-          hill << self.squares_id_ary[x_coord][y_coord][z_coord]
-        end
-        lines << hill
-      end
-    end
-    lines
-  end
-
   def gen_lines
     lines = []
 
     # COLUMNS:
-    lines = self.build_non_diag_lines(lines, ["i", "k"])
-    
-#     for x_coord in 0..self.size-1
-#       for z_coord in 0..self.size-1
-#         column = []
-#         for y_coord in 0..self.size-1
-#           column << self.squares_id_ary[x_coord][y_coord][z_coord]
-#         end
-#         lines << column
-#       end
-#     end
+    for x_coord in 0..self.size-1
+      for z_coord in 0..self.size-1
+        column = []
+        for y_coord in 0..self.size-1
+          column << self.squares_id_ary[x_coord][y_coord][z_coord]
+        end
+        lines << column
+      end
+    end
 
     # ROWS:
     for y_coord in 0..self.size-1
@@ -76,7 +29,6 @@ class Board < ActiveRecord::Base
     end
 
     # HILLS:
-#     self.build_non_diag_lines(["x"])
     for x_coord in 0..self.size-1
       for y_coord in 0..self.size-1
         hill = []
@@ -157,24 +109,20 @@ class Board < ActiveRecord::Base
     lines
   end
 
-  def gen_hills(x_coord, y_coord)
-    # A "hill" is the line containing all the z_coords
-    # sharing the same x/y-coords.
-    hills = []
-    for z_coord in 0..self.size-1
-      square = self.squares.create!({x_coord: x_coord, y_coord: y_coord,
-                                     z_coord: z_coord })
-      hills << square.id
-    end
-    hills
-  end
-
   def gen_squares_id_ary()
     self.squares_id_ary = []
     for x_coord in 0..self.size-1
       column = []
       for y_coord in 0..self.size-1
-        column << gen_hills(x_coord, y_coord)
+        hill = []
+        # A "hill" is the line containing all the z_coords
+        # sharing the same x/y-coords.
+        for z_coord in 0..self.size-1
+          square = self.squares.create!({x_coord: x_coord, y_coord: y_coord,
+                                         z_coord: z_coord })
+          hill << square.id
+        end
+        column << hill
       end
       squares_id_ary << column
     end
