@@ -119,7 +119,7 @@ class Board < ActiveRecord::Base
         # sharing the same x/y-coords.
         for z_coord in 0..self.size-1
           square = self.squares.create!({x_coord: x_coord, y_coord: y_coord,
-                                         z_coord: z_coord })
+                                         z_coord: z_coord, mark: "_" })
           hill << square.id
         end
         column << hill
@@ -130,6 +130,49 @@ class Board < ActiveRecord::Base
   end
 
   def render
+    lyrs = []
+    for x in 0..self.size-1
+      for y in 0..self.size-1
+        for z in 0..self.size-1
+          lyrs[z] ||= []
+          lyrs[z][y] ||= []
+          lyrs[z][y] << self.squares_id_ary[x][y][z]
+        end
+      end
+    end
 
+    html = ''
+    lyrs.each do |lyr|
+      html << '<div class="layer">'
+      lyr.each do |row|
+        html << '<div class="row">'
+        row.each do |square_id|
+          html << "<div class='square'>#{self.squares.find(square_id).mark}</div>"
+        end
+        html << '</div>'
+      end
+      html << '</div>'
+    end
+    html
   end
+  
+#     renderGrid:function() {
+#     var htmlStr = '<div id="grid">';
+#     this.grid.forEach(function(col) {
+#       htmlStr = htmlStr + '<div class="col">';
+
+#       var rowHtmlStr = '';
+#       col.forEach(function(cell) {
+#         if (cell.isDiscovered === true) {
+#           rowHtmlStr = cell.view + rowHtmlStr;
+#         } else {
+#           rowHtmlStr = cell.viewUndiscovered + rowHtmlStr;
+#         }
+#       });
+#       htmlStr = htmlStr + rowHtmlStr + '</div>';
+#     });
+#     htmlStr = htmlStr + '</div>';
+
+#     $('div#content').html(htmlStr);
+#   }
 end
