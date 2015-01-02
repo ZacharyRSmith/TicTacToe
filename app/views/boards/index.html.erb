@@ -5,7 +5,9 @@
   <% lyr.each do |row| %>
     <div class="row">
     <% row.each do |square_id| %>
-      <div class='square'><%= @board.squares.find(square_id).mark %></div>
+      <% square = @board.squares.find(square_id) %>
+      <div id='<%= square.x_coord.to_s + "," + square.y_coord.to_s + "," +
+               square.z_coord.to_s %>' class='square'><%= square.mark %></div>
       <% end %>
     </div>
     <% end %>
