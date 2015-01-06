@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150106181700) do
+ActiveRecord::Schema.define(version: 20150106194723) do
 
   create_table "boards", force: true do |t|
     t.integer  "game_id"
@@ -53,10 +53,11 @@ ActiveRecord::Schema.define(version: 20150106181700) do
     t.integer  "x_coord",    null: false
     t.integer  "y_coord",    null: false
     t.integer  "z_coord",    null: false
-    t.string   "mark"
+    t.string   "mark",       null: false
   end
 
   add_index "squares", ["board_id"], name: "index_squares_on_board_id"
+  add_index "squares", ["mark"], name: "index_squares_on_mark"
   add_index "squares", ["x_coord"], name: "index_squares_on_x_coord"
   add_index "squares", ["y_coord"], name: "index_squares_on_y_coord"
   add_index "squares", ["z_coord"], name: "index_squares_on_z_coord"
