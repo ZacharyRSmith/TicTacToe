@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150106115535) do
+ActiveRecord::Schema.define(version: 20150106163152) do
 
   create_table "boards", force: true do |t|
     t.integer  "game_id"
@@ -28,6 +28,20 @@ ActiveRecord::Schema.define(version: 20150106115535) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "lines", force: true do |t|
+    t.string   "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "lines_squares", id: false, force: true do |t|
+    t.integer "lines_id"
+    t.integer "squares_id"
+  end
+
+  add_index "lines_squares", ["lines_id"], name: "index_lines_squares_on_lines_id"
+  add_index "lines_squares", ["squares_id"], name: "index_lines_squares_on_squares_id"
 
   create_table "squares", force: true do |t|
     t.integer  "board_id",   null: false
