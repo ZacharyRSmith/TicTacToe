@@ -11,11 +11,15 @@ function divCoordsToInt(coordsStr) {
 
 $(document).ready(function(){
   $('div.row').on('click', '.square', function(){
+    var board_id = $('div.board').attr('id');
     var coordsIntAry = divCoordsToInt($(this).attr('id'));
     $.ajax({
       type: "POST",
       url: "index",
-      data: { coordsIntAry: coordsIntAry }
+      data: {
+        board_id: board_id,
+        coordsIntAry: coordsIntAry
+      }
     });
   });
 });

@@ -5,7 +5,7 @@ class Board < ActiveRecord::Base
   
   serialize :lines
   
-  after_initialize do
+  after_create do
     # FIXME This does not allow for a board to be init'd without saving!
     # This save is needed to create board.id
     self.save
@@ -14,21 +14,27 @@ class Board < ActiveRecord::Base
     self.save
   end
   
-#   def check_victory
-#     marked_lines = self.lines.select do |ln|
-#       ln.any? { |square| square.mark != "_" }
-#     end
+  def victory?
+    marked_lines = self.lines.select do |ln|
+      ln.any? do |square|
+        square = self.squares.find(square)
+        square.mark != "_"
+      end
+    end
 
-#     victory_lines = marked_lines.select do |ln|
-#       ln.all? { |square| square.mark == "X" }
-#     end
+    victory_lines = marked_lines.select do |ln|
+      ln.all? do |square|
+        square = self.squares.find(square)
+        square.mark == "X"
+      end
+    end
 
-#     if victory_lines.count > 0
-#       return true
-#     else
-#       return false
-#     end
-#   end
+    if victory_lines.count > 0
+      return true
+    else
+      return false
+    end
+  end
 
   def gen_lines
     lines = []

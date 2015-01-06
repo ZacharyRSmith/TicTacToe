@@ -1,15 +1,17 @@
 <h1>Boards#index</h1>
 
-<% @lyrs.each do |lyr| %>
-  <div class="layer">
-  <% lyr.each do |row| %>
-    <div class="row">
-    <% row.each do |square_id| %>
-      <% square = @board.squares.find(square_id) %>
-      <div id='<%= square.x_coord.to_s + "-" + square.y_coord.to_s + "-" +
-               square.z_coord.to_s %>' class='square'><%= square.mark %></div>
+<div id="<%= @board.id %>" class="board">
+  <% @lyrs.each do |lyr| %>
+    <div class="layer">
+    <% lyr.each do |row| %>
+      <div class="row">
+      <% row.each do |square_id| %>
+        <% square = @board.squares.find(square_id) %>
+        <div id='<%= square.x_coord.to_s + "-" + square.y_coord.to_s + "-" +
+                 square.z_coord.to_s %>' class='square'><%= square.mark %></div>
+        <% end %>
+      </div>
       <% end %>
     </div>
-    <% end %>
-  </div>
-<% end %>
+  <% end %>
+</div>

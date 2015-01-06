@@ -1,2 +1,5 @@
-<!-- $('body').append('<div>Hello!</div>'); -->
+if (<%= @victory %>) {
+  alert("Victory!");
+}
+
 $('div.square#<%= @coordsStr %>').html('<%= @new_mark %>');
