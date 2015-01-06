@@ -2,7 +2,6 @@ class Board < ActiveRecord::Base
   belongs_to :game
   has_many :squares
   serialize :squares_id_ary
-  
   serialize :lines
   
   after_create do
