@@ -3,6 +3,23 @@ class Board < ActiveRecord::Base
   has_many :squares
   serialize :squares_id_ary
 
+  
+#   def check_victory
+#     marked_lines = self.lines.select do |ln|
+#       ln.any? { |square| square.mark != "_" }
+#     end
+
+#     victory_lines = marked_lines.select do |ln|
+#       ln.all? { |square| square.mark == "X" }
+#     end
+
+#     if victory_lines.count > 0
+#       return true
+#     else
+#       return false
+#     end
+#   end
+
   def gen_lines
     lines = []
 
@@ -141,18 +158,5 @@ class Board < ActiveRecord::Base
       end
     end
     lyrs
-#     html = ''
-#     lyrs.each do |lyr|
-#       html << '<div class="layer">'
-#       lyr.each do |row|
-#         html << '<div class="row">'
-#         row.each do |square_id|
-#           html << "<div class='square'>#{self.squares.find(square_id).mark}</div>"
-#         end
-#         html << '</div>'
-#       end
-#       html << '</div>'
-#     end
-#     html
   end
 end
