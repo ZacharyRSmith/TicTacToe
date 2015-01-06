@@ -3,6 +3,8 @@ class BoardsController < ApplicationController
     respond_to do |f|
       if request.xhr?
         @board = Board.find(params[:board_id])
+
+        # Mark the square that was clicked.
         coordsIntAry = params[:coordsIntAry]
         x = coordsIntAry[0].to_i
         y = coordsIntAry[1].to_i
@@ -11,6 +13,7 @@ class BoardsController < ApplicationController
         square.mark = "X"
         square.save
 
+        # Computer marks a random unmarked square.
         unmarked_squares_ary = @board.squares.where(mark: "_")
         ai_square = unmarked_squares_ary.sample
         ai_square.mark = "O"
@@ -22,7 +25,7 @@ class BoardsController < ApplicationController
         }
       else
         f.html {
-          @board = Board.create!({ size: 2 })
+          @board = Board.create!({ size: 3 })
           @lyrs = @board.init_lyrs_ary()
         }
       end

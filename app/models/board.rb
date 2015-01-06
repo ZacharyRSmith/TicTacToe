@@ -6,10 +6,12 @@ class Board < ActiveRecord::Base
   serialize :lines
   
   after_create do
-    # FIXME This does not allow for a board to be init'd without saving!
     # This save is needed to create board.id
     self.save
     self.gen_squares_id_ary
+    square = self.squares.find(self.squares_id_ary[1][1][1])
+    square.mark = "~"
+    square.save
     self.gen_lines
     self.save
   end
