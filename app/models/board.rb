@@ -9,12 +9,17 @@ class Board < ActiveRecord::Base
     # This save is needed to create board.id
     self.save
     self.gen_squares_id_ary
+    # This save is needed so that self has squares_id_ary
+    self.save
     self.gen_lines
 
-    # Make middle square of 3^3 box un-useable:
-    sqr = self.squares.find(self.squares_id_ary[1][1][1])
-    sqr.mark = "~"
-    sqr.save
+    # If board size-length is uneven, make middle square un-useable:
+    if self.size % 2 != 0
+      mid = (self.size-1) / 2
+      sqr = self.squares.find(self.squares_id_ary[mid][mid][mid])
+      sqr.mark = "~"
+      sqr.save
+    end
 
     self.save
   end
@@ -170,8 +175,18 @@ class Board < ActiveRecord::Base
     end
     lines << line
 
-#     lines
-    
+    # If board side-length is uneven, remove lines containing middle-square.
+    if self.size % 2 != 0
+      mid = (self.size-1) / 2
+      
+      puts "HELLO!"
+      print mid
+      middle_square = self.squares_id_ary[mid][mid][mid]
+      lines = lines.keep_if do |ln|
+        ln.all? { |square| square != middle_square }
+      end
+    end
+
     self.lines = lines
   end
 

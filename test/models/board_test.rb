@@ -10,7 +10,7 @@ class BoardTest < ActiveSupport::TestCase
     # diagonals
     # diagonal-diagonals
     # hills
-    
+
     lines = boards(:b).gen_lines()
     lines = lines.each { |ln| ln.sort! }
     assert_equal 28, lines.uniq.count
