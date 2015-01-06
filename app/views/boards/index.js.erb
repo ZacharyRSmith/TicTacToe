@@ -1,2 +1,4 @@
 $('div.square#<%= @coords_str %>').html('X');
 $('div.square#<%= @ai_square_coords_str %>').html('O');
+$('button#x_score').html("X's score: <%= @scores_ary[0] %>");
+$('button#o_score').html("O's score: <%= @scores_ary[1] %>");

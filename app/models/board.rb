@@ -16,7 +16,7 @@ class Board < ActiveRecord::Base
     self.save
   end
   
-  def victory?
+  def get_scores
     marked_lines = self.lines.select do |ln|
       ln.any? do |square|
         square = self.squares.find(square)
@@ -24,18 +24,23 @@ class Board < ActiveRecord::Base
       end
     end
 
-    victory_lines = marked_lines.select do |ln|
-      ln.all? do |square|
-        square = self.squares.find(square)
-        square.mark == "X"
+    x_score = 0
+    o_score = 0
+    marked_lines.each do |ln|
+      if ln.all? do |sqr_id|
+          sqr = self.squares.find(sqr_id)
+          sqr.mark == "X"
+        end
+        x_score += 1
+      elsif ln.all? do |sqr_id|
+          sqr = self.squares.find(sqr_id)
+          sqr.mark == "O"
+        end
+        o_score += 1
       end
     end
 
-    if victory_lines.count > 0
-      return true
-    else
-      return false
-    end
+    [x_score, o_score]
   end
 
   def gen_lines

@@ -22,6 +22,7 @@ class BoardsController < ApplicationController
         f.js {
           @ai_square_coords_str = ai_square.get_coords_str()
           @coords_str = square.get_coords_str()
+          @scores_ary = @board.get_scores()
         }
       else
         f.html {
