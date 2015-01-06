@@ -24,6 +24,8 @@ class Board < ActiveRecord::Base
       sqr.save
     end
 
+    self.squares.each { |sqr| sqr.set_ai_priority() }
+
     self.save
   end
   

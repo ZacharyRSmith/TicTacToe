@@ -15,13 +15,22 @@ class BoardsController < ApplicationController
                           "Click on another square." }
         else
           square.mark = "X"
+          square.reset_lines("X")
+          square.reset_associated_ai_priorities()
           square.save
 
           # Computer marks a random unmarked square.
-          unmarked_squares_ary = @board.squares.where(mark: "_")
-          ai_square = unmarked_squares_ary.sample
+          max_priority = @board.squares.where(mark: "_").maximum("ai_priority")
+          ai_square = @board.squares.where(mark: "_").where(ai_priority: max_priority).sample
           ai_square.mark = "O"
+          ai_square.reset_lines("O")
+          ai_square.reset_associated_ai_priorities()
           ai_square.save
+
+#           unmarked_squares_ary = @board.squares.where(mark: "_")
+#           ai_square = unmarked_squares_ary.sample
+#           ai_square.mark = "O"
+#           ai_square.save
 
           f.js {
             @ai_square_coords_str = ai_square.get_coords_str()

@@ -8,6 +8,14 @@ class Square < ActiveRecord::Base
                  self.z_coord.to_s
   end
 
+  def reset_associated_ai_priorities
+    self.lines.each do |ln|
+      ln.squares.each do |sqr|
+        sqr.set_ai_priority()
+      end
+    end
+  end
+
   def reset_lines(new_mark)
     self.lines.each do |ln|
       ln.set_status(new_mark)
@@ -27,5 +35,6 @@ class Square < ActiveRecord::Base
       end
     end
     self.ai_priority = priority
+    self.save
   end
 end
