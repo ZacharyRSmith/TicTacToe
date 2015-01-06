@@ -36,12 +36,12 @@ ActiveRecord::Schema.define(version: 20150106163152) do
   end
 
   create_table "lines_squares", id: false, force: true do |t|
-    t.integer "lines_id"
-    t.integer "squares_id"
+    t.integer "line_id"
+    t.integer "square_id"
   end
 
-  add_index "lines_squares", ["lines_id"], name: "index_lines_squares_on_lines_id"
-  add_index "lines_squares", ["squares_id"], name: "index_lines_squares_on_squares_id"
+  add_index "lines_squares", ["line_id"], name: "index_lines_squares_on_line_id"
+  add_index "lines_squares", ["square_id"], name: "index_lines_squares_on_square_id"
 
   create_table "squares", force: true do |t|
     t.integer  "board_id",   null: false
