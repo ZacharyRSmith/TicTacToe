@@ -6,7 +6,7 @@
     <div class="row">
     <% row.each do |square_id| %>
       <% square = @board.squares.find(square_id) %>
-      <div id='<%= square.x_coord.to_s + "," + square.y_coord.to_s + "," +
+      <div id='<%= square.x_coord.to_s + "-" + square.y_coord.to_s + "-" +
                square.z_coord.to_s %>' class='square'><%= square.mark %></div>
       <% end %>
     </div>
