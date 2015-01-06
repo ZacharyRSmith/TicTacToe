@@ -1,5 +1,2 @@
-if (<%= @victory %>) {
-  alert("Victory!");
-}
-
-$('div.square#<%= @coordsStr %>').html('<%= @new_mark %>');
+$('div.square#<%= @coords_str %>').html('X');
+$('div.square#<%= @ai_square_coords_str %>').html('O');

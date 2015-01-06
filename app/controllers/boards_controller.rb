@@ -11,16 +11,14 @@ class BoardsController < ApplicationController
         square.mark = "X"
         square.save
 
-        if @board.victory?
-          @victory = true
-        else
-          @victory = false
-        end
+        unmarked_squares_ary = @board.squares.where(mark: "_")
+        ai_square = unmarked_squares_ary.sample
+        ai_square.mark = "O"
+        ai_square.save
 
         f.js {
-          @coordsStr = x.to_s + "-" + y.to_s + "-" + z.to_s
-          @new_mark = square.mark
-          @victory
+          @ai_square_coords_str = ai_square.get_coords_str()
+          @coords_str = square.get_coords_str()
         }
       else
         f.html {
