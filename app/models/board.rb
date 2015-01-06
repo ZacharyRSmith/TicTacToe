@@ -12,8 +12,10 @@ class Board < ActiveRecord::Base
     # This save is needed so that self has squares_id_ary
     self.save
     self.gen_lines
+    self.set_lines_on_squares
 
-    # If board size-length is uneven, make middle square un-useable:
+    # If board size-length is uneven, make middle square un-useable
+    # (because it would give excessive advantage to the beginning player):
     if self.size % 2 != 0
       mid = (self.size-1) / 2
       sqr = self.squares.find(self.squares_id_ary[mid][mid][mid])
@@ -26,7 +28,7 @@ class Board < ActiveRecord::Base
   
   def get_scores
     marked_lines = self.lines.select do |ln|
-      ln.any? do |square|
+      ln.squares.any? do |square|
         square = self.squares.find(square)
         square.mark != "_"
       end
@@ -52,7 +54,7 @@ class Board < ActiveRecord::Base
   end
 
   def add_line(squares_id_ary)
-    line = self.lines.create!
+    line = self.lines.create!({ status: "unmarked" })
     squares_id_ary.each do |sqr_id|
       sqr = self.squares.find(sqr_id)
       line.squares << sqr
@@ -97,7 +99,6 @@ class Board < ActiveRecord::Base
     end
 
     # DIAGONALS:
-    
     # On the same z-plane/layer:
     for z_coord in 0..self.size-1
 
@@ -228,4 +229,14 @@ class Board < ActiveRecord::Base
     end
     lyrs
   end
+  
+  def set_lines_on_squares
+    self.squares.each do |sqr|
+      lines = self.lines.select do |ln|
+        ln.squares.any? { |ln_sqr| ln_sqr == sqr }
+      end
+      sqr.lines = lines
+    end
+  end
+
 end
