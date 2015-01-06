@@ -9,9 +9,8 @@ class Board < ActiveRecord::Base
     # This save is needed to create board.id
     self.save
     self.gen_squares_id_ary
-    square = self.squares.find(self.squares_id_ary[1][1][1])
-    square.mark = "~"
-    square.save
+
+    
     self.gen_lines
     self.save
   end
@@ -80,6 +79,25 @@ class Board < ActiveRecord::Base
     end
 
     # DIAGONALS:
+    
+    # On the same z-plane/layer:
+    for z_coord in 0..self.size-1
+
+      line = []
+      for x_coord in 0..self.size-1
+        y_coord = x_coord
+        line << self.squares_id_ary[x_coord][y_coord][z_coord]
+      end
+      lines << line
+
+      line = []
+      for x_coord in (self.size-1).downto(0)
+        y_coord = (self.size-1) - x_coord
+        line << self.squares_id_ary[x_coord][y_coord][z_coord]
+      end
+      lines << line
+    end
+
     # Diagonal-columns at coords (x, 0, 0):
     for x_coord in 0..self.size-1
       column = []
@@ -91,8 +109,9 @@ class Board < ActiveRecord::Base
     # Diagonal-columns at coords (x, 0, greatest):
     for x_coord in 0..self.size-1
       column = []
-      for i_coord in (self.size-1).downto(0)
-        column << self.squares_id_ary[x_coord][i_coord][i_coord]
+      for z_coord in (self.size-1).downto(0)
+        y_coord = (self.size-1) - z_coord
+        column << self.squares_id_ary[x_coord][y_coord][z_coord]
       end
       lines << column
     end
@@ -109,7 +128,8 @@ class Board < ActiveRecord::Base
     for y_coord in 0..self.size-1
       line = []
       for i_coord in (self.size-1).downto(0)
-        line << self.squares_id_ary[i_coord][y_coord][i_coord]
+        x_coord = (self.size-1) - i_coord
+        line << self.squares_id_ary[x_coord][y_coord][i_coord]
       end
       lines << line
     end
