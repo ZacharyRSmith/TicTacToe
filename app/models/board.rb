@@ -2,7 +2,17 @@ class Board < ActiveRecord::Base
   belongs_to :game
   has_many :squares
   serialize :squares_id_ary
-
+  
+  serialize :lines
+  
+  after_initialize do
+    # FIXME This does not allow for a board to be init'd without saving!
+    # This save is needed to create board.id
+    self.save
+    self.gen_squares_id_ary
+    self.gen_lines
+    self.save
+  end
   
 #   def check_victory
 #     marked_lines = self.lines.select do |ln|
@@ -123,7 +133,9 @@ class Board < ActiveRecord::Base
     end
     lines << line
 
-    lines
+#     lines
+    
+    self.lines = lines
   end
 
   def gen_squares_id_ary()

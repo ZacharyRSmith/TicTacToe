@@ -1,7 +1,6 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 <% b = Board.create!({ size: 2 }) %>
-<% b.gen_squares_id_ary() %>
 b:
   id: <%= b.id %>
   size: <%= b.size %>
