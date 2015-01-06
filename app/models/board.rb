@@ -1,5 +1,6 @@
 class Board < ActiveRecord::Base
   belongs_to :game
+  has_many :lines
   has_many :squares
   serialize :squares_id_ary
   serialize :lines
@@ -50,39 +51,48 @@ class Board < ActiveRecord::Base
     [x_score, o_score]
   end
 
-  def gen_lines
-    lines = []
+  def add_line(squares_id_ary)
+    line = self.lines.create!
+    squares_id_ary.each do |sqr_id|
+      sqr = self.squares.find(sqr_id)
+      line.squares << sqr
+    end
+  end
 
+  def gen_lines
     # COLUMNS:
     for x_coord in 0..self.size-1
       for z_coord in 0..self.size-1
-        column = []
+        squares_id_ary = []
         for y_coord in 0..self.size-1
-          column << self.squares_id_ary[x_coord][y_coord][z_coord]
+          squares_id_ary << self.squares_id_ary[x_coord][y_coord][z_coord]
         end
-        lines << column
+
+        self.add_line(squares_id_ary)
       end
     end
 
     # ROWS:
     for y_coord in 0..self.size-1
       for z_coord in 0..self.size-1
-        row = []
+        squares_id_ary = []
         for x_coord in 0..self.size-1
-          row << self.squares_id_ary[x_coord][y_coord][z_coord]
+          squares_id_ary << self.squares_id_ary[x_coord][y_coord][z_coord]
         end
-        lines << row
+
+        self.add_line(squares_id_ary)
       end
     end
 
     # HILLS:
     for x_coord in 0..self.size-1
       for y_coord in 0..self.size-1
-        hill = []
+        squares_id_ary = []
         for z_coord in 0..self.size-1
-          hill << self.squares_id_ary[x_coord][y_coord][z_coord]
+          squares_id_ary << self.squares_id_ary[x_coord][y_coord][z_coord]
         end
-        lines << hill
+
+        self.add_line(squares_id_ary)
       end
     end
 
@@ -91,102 +101,98 @@ class Board < ActiveRecord::Base
     # On the same z-plane/layer:
     for z_coord in 0..self.size-1
 
-      line = []
+      squares_id_ary = []
       for x_coord in 0..self.size-1
         y_coord = x_coord
-        line << self.squares_id_ary[x_coord][y_coord][z_coord]
+        squares_id_ary << self.squares_id_ary[x_coord][y_coord][z_coord]
       end
-      lines << line
+      self.add_line(squares_id_ary)
 
-      line = []
+      squares_id_ary = []
       for x_coord in (self.size-1).downto(0)
         y_coord = (self.size-1) - x_coord
-        line << self.squares_id_ary[x_coord][y_coord][z_coord]
+        squares_id_ary << self.squares_id_ary[x_coord][y_coord][z_coord]
       end
-      lines << line
+      self.add_line(squares_id_ary)
     end
 
     # Diagonal-columns at coords (x, 0, 0):
     for x_coord in 0..self.size-1
-      column = []
+      squares_id_ary = []
       for i_coord in 0..self.size-1
-        column << self.squares_id_ary[x_coord][i_coord][i_coord]
+        squares_id_ary << self.squares_id_ary[x_coord][i_coord][i_coord]
       end
-      lines << column
+      self.add_line(squares_id_ary)
     end
     # Diagonal-columns at coords (x, 0, greatest):
     for x_coord in 0..self.size-1
-      column = []
+      squares_id_ary = []
       for z_coord in (self.size-1).downto(0)
         y_coord = (self.size-1) - z_coord
-        column << self.squares_id_ary[x_coord][y_coord][z_coord]
+        squares_id_ary << self.squares_id_ary[x_coord][y_coord][z_coord]
       end
-      lines << column
+      self.add_line(squares_id_ary)
     end
 
     # Diagonal-rows at coords (0, y, 0):
     for y_coord in 0..self.size-1
-      line = []
+      squares_id_ary = []
       for i_coord in 0..self.size-1
-        line << self.squares_id_ary[i_coord][y_coord][i_coord]
+        squares_id_ary << self.squares_id_ary[i_coord][y_coord][i_coord]
       end
-      lines << line
+      self.add_line(squares_id_ary)
     end
     # Diagonal-rows at coords (0, y, greatest):
     for y_coord in 0..self.size-1
-      line = []
+      squares_id_ary = []
       for i_coord in (self.size-1).downto(0)
         x_coord = (self.size-1) - i_coord
-        line << self.squares_id_ary[x_coord][y_coord][i_coord]
+        squares_id_ary << self.squares_id_ary[x_coord][y_coord][i_coord]
       end
-      lines << line
+      self.add_line(squares_id_ary)
     end
 
     # Corner diagonals (diagonals that go through the center of the box):
     # at coords (0,0,0)
-    line = []
+    squares_id_ary = []
     for i_coord in 0..self.size-1
-      line << self.squares_id_ary[i_coord][i_coord][i_coord]
+      squares_id_ary << self.squares_id_ary[i_coord][i_coord][i_coord]
     end
-    lines << line
+    self.add_line(squares_id_ary)
 
     # at coords (0, 0, greatest)
-    line = []
+    squares_id_ary = []
     for i_coord in 0..self.size-1
       z_coord = (self.size-1) - i_coord
-      line << self.squares_id_ary[i_coord][i_coord][z_coord]
+      squares_id_ary << self.squares_id_ary[i_coord][i_coord][z_coord]
     end
-    lines << line
+    self.add_line(squares_id_ary)
 
     # at coords (greatest, 0, 0)
-    line = []
+    squares_id_ary = []
     for i_coord in 0..self.size-1
       x_coord = (self.size-1) - i_coord
-      line << self.squares_id_ary[x_coord][i_coord][i_coord]
+      squares_id_ary << self.squares_id_ary[x_coord][i_coord][i_coord]
     end
-    lines << line
+    self.add_line(squares_id_ary)
 
     # at coords (greatest, 0, greatest)
-    line = []
+    squares_id_ary = []
     for y_coord in 0..self.size-1
       i_coord = (self.size-1) - y_coord
-      line << self.squares_id_ary[i_coord][y_coord][i_coord]
+      squares_id_ary << self.squares_id_ary[i_coord][y_coord][i_coord]
     end
-    lines << line
+    self.add_line(squares_id_ary)
 
     # If board side-length is uneven, remove lines containing middle-square.
     if self.size % 2 != 0
       mid = (self.size-1) / 2
-      
-      puts "HELLO!"
-      print mid
-      middle_square = self.squares_id_ary[mid][mid][mid]
-      lines = lines.keep_if do |ln|
-        ln.all? { |square| square != middle_square }
+
+      middle_square_id = self.squares_id_ary[mid][mid][mid]
+      self.lines = self.lines.keep_if do |ln|
+        ln.squares.all? { |square| square.id != middle_square_id }
       end
     end
-
-    self.lines = lines
   end
 
   def gen_squares_id_ary()
