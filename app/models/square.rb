@@ -8,10 +8,24 @@ class Square < ActiveRecord::Base
                  self.z_coord.to_s
   end
 
-    
   def reset_lines(new_mark)
     self.lines.each do |ln|
       ln.set_status(new_mark)
     end
+  end
+
+  def set_ai_priority
+    priority = 0
+    self.lines.each do |ln|
+      case ln.status
+      when "unmarked"
+        priority += 2
+      when "non_scoreable"
+        priority += 0
+      else
+        priority += 1
+      end
+    end
+    self.ai_priority = priority
   end
 end
