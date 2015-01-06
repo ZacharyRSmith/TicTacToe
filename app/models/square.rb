@@ -7,4 +7,11 @@ class Square < ActiveRecord::Base
                  self.y_coord.to_s + "-" +
                  self.z_coord.to_s
   end
+
+    
+  def reset_lines(new_mark)
+    self.lines.each do |ln|
+      ln.set_status(new_mark)
+    end
+  end
 end

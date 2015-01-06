@@ -20,6 +20,7 @@ class Board < ActiveRecord::Base
       mid = (self.size-1) / 2
       sqr = self.squares.find(self.squares_id_ary[mid][mid][mid])
       sqr.mark = "~"
+      sqr.reset_lines("~")
       sqr.save
     end
 
@@ -27,25 +28,20 @@ class Board < ActiveRecord::Base
   end
   
   def get_scores
-    marked_lines = self.lines.select do |ln|
-      ln.squares.any? do |square|
-        square = self.squares.find(square)
-        square.mark != "_"
-      end
-    end
+    marked_lines = self.lines.where!(status: "unmarked")
 
     x_score = 0
     o_score = 0
     marked_lines.each do |ln|
-      if ln.all? do |sqr_id|
-          sqr = self.squares.find(sqr_id)
+      if ln.squares.all? do |sqr|
           sqr.mark == "X"
         end
+        ln.set_status_as_scored
         x_score += 1
-      elsif ln.all? do |sqr_id|
-          sqr = self.squares.find(sqr_id)
+      elsif ln.squares.all? do |sqr|
           sqr.mark == "O"
         end
+        ln.set_status_as_scored
         o_score += 1
       end
     end
@@ -186,14 +182,14 @@ class Board < ActiveRecord::Base
     self.add_line(squares_id_ary)
 
     # If board side-length is uneven, remove lines containing middle-square.
-    if self.size % 2 != 0
-      mid = (self.size-1) / 2
+#     if self.size % 2 != 0
+#       mid = (self.size-1) / 2
 
-      middle_square_id = self.squares_id_ary[mid][mid][mid]
-      self.lines = self.lines.keep_if do |ln|
-        ln.squares.all? { |square| square.id != middle_square_id }
-      end
-    end
+#       middle_square_id = self.squares_id_ary[mid][mid][mid]
+#       self.lines = self.lines.keep_if do |ln|
+#         ln.squares.all? { |square| square.id != middle_square_id }
+#       end
+#     end
   end
 
   def gen_squares_id_ary()
@@ -229,7 +225,7 @@ class Board < ActiveRecord::Base
     end
     lyrs
   end
-  
+
   def set_lines_on_squares
     self.squares.each do |sqr|
       lines = self.lines.select do |ln|

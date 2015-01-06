@@ -32,7 +32,7 @@ class BoardsController < ApplicationController
         end
       else
         f.html {
-          @board = Board.create!({ size: 4 })
+          @board = Board.create!({ size: 3 })
           @lyrs = @board.init_lyrs_ary()
         }
       end
