@@ -9,9 +9,13 @@ class Board < ActiveRecord::Base
     # This save is needed to create board.id
     self.save
     self.gen_squares_id_ary
-
-    
     self.gen_lines
+
+    # Make middle square of 3^3 box un-useable:
+    sqr = self.squares.find(self.squares_id_ary[1][1][1])
+    sqr.mark = "~"
+    sqr.save
+
     self.save
   end
   
