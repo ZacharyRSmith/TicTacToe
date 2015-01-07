@@ -1,5 +1,4 @@
 class Board < ActiveRecord::Base
-  belongs_to :game
   has_many :lines
   has_many :squares
   serialize :squares_id_ary
