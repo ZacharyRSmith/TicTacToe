@@ -11,8 +11,7 @@ class BoardsController < ApplicationController
         z = coordsIntAry[2].to_i
         square = @board.squares.find(@board.squares_id_ary[x][y][z])
         if square.mark != "_"
-          f.js { @alert = "That square is already taken!\n" +
-                          "Click on another square." }
+          f.js { render :file => "boards/bad_click.js.erb" }
         else
           square.mark = "X"
           square.reset_lines("X")
@@ -34,7 +33,6 @@ class BoardsController < ApplicationController
 
           f.js {
             @ai_square_coords_str = ai_square.get_coords_str()
-            @alert = "You did not click on an already-marked square. Look at you!"
             @coords_str = square.get_coords_str()
             @scores_ary = @board.get_scores()
           }
