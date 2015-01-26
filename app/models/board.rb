@@ -12,17 +12,9 @@ class Board < ActiveRecord::Base
     self.save
     self.gen_lines
     self.set_lines_on_squares
-
-    # If board size-length is uneven, make middle square un-useable
-    # (because it would give excessive advantage to the beginning player):
-    if self.size % 2 != 0
-      mid = (self.size-1) / 2
-      sqr = self.squares.find(self.squares_id_ary[mid][mid][mid])
-      sqr.mark = "~"
-      sqr.reset_lines("~")
-      sqr.save
-    end
-
+    # board#reset_mid_sqr_lines makes middle square un-useable
+    # (because it would give excessive advantage to the beginning player)
+    self.reset_mid_sqr_lines()
     self.squares.each { |sqr| sqr.set_ai_priority() }
 
     self.save
@@ -215,6 +207,18 @@ class Board < ActiveRecord::Base
       end
     end
     lyrs
+  end
+
+  def reset_mid_sqr_lines
+    # If board size-length is uneven, make middle square un-useable
+    # (because it would give excessive advantage to the beginning player):
+    if self.size % 2 != 0
+      mid = (self.size-1) / 2
+      sqr = self.squares.find(self.squares_id_ary[mid][mid][mid])
+      sqr.mark = "~"
+      sqr.reset_lines("~")
+      sqr.save
+    end
   end
 
   def set_lines_on_squares
