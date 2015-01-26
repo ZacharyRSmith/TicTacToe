@@ -3,7 +3,7 @@ class Board < ActiveRecord::Base
   has_many :squares
   serialize :squares_id_ary
   serialize :lines
-  
+
   after_create do
     # This save is needed to create board.id
     self.save
@@ -27,7 +27,7 @@ class Board < ActiveRecord::Base
 
     self.save
   end
-  
+
   def get_scores
     marked_lines = self.lines.where!(status: "unmarked")
 

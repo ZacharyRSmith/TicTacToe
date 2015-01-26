@@ -26,11 +26,6 @@ class BoardsController < ApplicationController
           ai_square.reset_associated_ai_priorities()
           ai_square.save
 
-#           unmarked_squares_ary = @board.squares.where(mark: "_")
-#           ai_square = unmarked_squares_ary.sample
-#           ai_square.mark = "O"
-#           ai_square.save
-
           f.js {
             @ai_square_coords_str = ai_square.get_coords_str()
             @coords_str = square.get_coords_str()
