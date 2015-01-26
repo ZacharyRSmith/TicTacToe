@@ -181,16 +181,6 @@ class Board < ActiveRecord::Base
       squares_id_ary << self.squares_id_ary[i_coord][y_coord][i_coord]
     end
     self.add_line(squares_id_ary)
-
-    # If board side-length is uneven, remove lines containing middle-square.
-#     if self.size % 2 != 0
-#       mid = (self.size-1) / 2
-
-#       middle_square_id = self.squares_id_ary[mid][mid][mid]
-#       self.lines = self.lines.keep_if do |ln|
-#         ln.squares.all? { |square| square.id != middle_square_id }
-#       end
-#     end
   end
 
   def gen_squares_id_ary()
