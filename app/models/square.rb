@@ -1,6 +1,11 @@
 class Square < ActiveRecord::Base
   belongs_to :board
   has_and_belongs_to_many :lines
+  validates :board_id, presence: true
+  validates :x_coord, presence: true
+  validates :y_coord, presence: true
+  validates :z_coord, presence: true
+  validates :mark, presence: true
 
   def get_coords_str
     coords_str = self.x_coord.to_s + "-" +
