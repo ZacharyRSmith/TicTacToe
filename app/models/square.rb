@@ -1,4 +1,5 @@
 class Square < ActiveRecord::Base
+  # See schema for property documentation.
   belongs_to :board
   has_and_belongs_to_many :lines
   validates :board_id, presence: true

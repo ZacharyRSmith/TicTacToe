@@ -1,4 +1,5 @@
 class Line < ActiveRecord::Base
+  # See schema for property documentation.
   has_and_belongs_to_many :squares
   belongs_to :board
 
