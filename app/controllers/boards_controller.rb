@@ -10,10 +10,10 @@ class BoardsController < ApplicationController
 
       @board = Board.find(params[:board_id])
       # Mark the square that was clicked.
-      coordsIntAry = params[:coordsIntAry]
-      x = coordsIntAry[0].to_i
-      y = coordsIntAry[1].to_i
-      z = coordsIntAry[2].to_i
+      coords_int_ary = params[:coordsIntAry]
+      x = coords_int_ary[0].to_i
+      y = coords_int_ary[1].to_i
+      z = coords_int_ary[2].to_i
       square = @board.squares.find(@board.squares_id_ary[x][y][z])
       if square.mark != "_"
         f.js { render :file => "boards/bad_click.js.erb" }

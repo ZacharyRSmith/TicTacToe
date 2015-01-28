@@ -16,9 +16,11 @@ ActiveRecord::Schema.define(version: 20150127155049) do
   create_table "boards", force: true do |t|
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
-    t.string   "squares_id_ary"
+    t.string   "squares_id_ary" # 3D-array. Gives pseudo-id to each square
+    # using x-, y-, z-coords. E.g., self.squares_id_ary[0][1][2] gets
+    # square with x-coord = 0, y-coord = 1, z-coord = 2. Serialized.
     t.integer  "size"
-    t.string   "lines"
+    t.string   "lines" # serialized
   end
 
   create_table "lines", force: true do |t|
