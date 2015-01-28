@@ -3,7 +3,6 @@ class Board < ActiveRecord::Base
   has_many :lines
   has_many :squares
   serialize :squares_id_ary
-  serialize :lines
 
   after_create do
     # This save is needed to create board.id

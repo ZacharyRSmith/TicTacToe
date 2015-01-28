@@ -11,20 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150127155049) do
+ActiveRecord::Schema.define(version: 20150128162538) do
 
   create_table "boards", force: true do |t|
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
-    t.string   "squares_id_ary" # 3D-array. Gives pseudo-id to each square
-      # using x-, y-, z-coords. E.g., self.squares_id_ary[0][1][2] gets
-      # square with x-coord = 0, y-coord = 1, z-coord = 2. Serialized.
+    t.string   "squares_id_ary"
     t.integer  "size"
-    t.string   "lines" # All the lines in this 3D board. Serialized.
   end
 
   create_table "lines", force: true do |t|
-    t.string   "status" # Used for AI purposes.
+    t.string   "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "board_id"
@@ -47,9 +44,8 @@ ActiveRecord::Schema.define(version: 20150127155049) do
     t.integer  "x_coord",     null: false
     t.integer  "y_coord",     null: false
     t.integer  "z_coord",     null: false
-    t.string   "mark",        null: false # E.g., "X", "O", "_" (blank), and
-    # "~" for non-markable squares.
-    t.integer  "ai_priority" # How much the AI values this square.
+    t.string   "mark",        null: false
+    t.integer  "ai_priority"
   end
 
   add_index "squares", ["ai_priority"], name: "index_squares_on_ai_priority"
