@@ -1,5 +1,5 @@
 class Board < ActiveRecord::Base
-  # See schema for property documentation.
+  # See db/doc_schema.rb for property documentation.
   has_many :lines
   has_many :squares
   serialize :squares_id_ary
