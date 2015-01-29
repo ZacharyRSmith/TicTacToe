@@ -47,41 +47,7 @@ class Board < ActiveRecord::Base
   end
 
   def gen_lines()
-    # COLUMNS:
-    for x in 0..self.size-1
-      for z in 0..self.size-1
-        squares_ary = []
-        for y in 0..self.size-1
-          squares_ary << self.squares.where(x_coord: x, y_coord: y, z_coord: z)
-        end
-
-        self.add_line(squares_ary)
-      end
-    end
-
-    # ROWS:
-    for y in 0..self.size-1
-      for z in 0..self.size-1
-        squares_ary = []
-        for x in 0..self.size-1
-          squares_ary << self.squares.where(x_coord: x, y_coord: y, z_coord: z)
-        end
-
-        self.add_line(squares_ary)
-      end
-    end
-
-    # HILLS:
-    for x in 0..self.size-1
-      for y in 0..self.size-1
-        squares_ary = []
-        for z in 0..self.size-1
-          squares_ary << self.squares.where(x_coord: x, y_coord: y, z_coord: z)
-        end
-
-        self.add_line(squares_ary)
-      end
-    end
+    self.gen_straight_lines()
 
     # DIAGONALS:
     # On the same z-plane/layer:
@@ -170,7 +136,7 @@ class Board < ActiveRecord::Base
     end
     self.add_line(squares_ary)
   end
-  
+
   def gen_squares()
     for x in 0..self.size-1
       for y in 0..self.size-1
@@ -182,6 +148,25 @@ class Board < ActiveRecord::Base
     end
   end
 
+  def gen_straight_lines()
+    for i in 0..self.size-1
+      for j in 0..self.size-1
+        column = []
+        row    = []
+        hill   = []
+        for k in 0..self.size-1
+          column << self.squares.where(x_coord: i, y_coord: k, z_coord: j)
+          row    << self.squares.where(x_coord: k, y_coord: i, z_coord: j)
+          hill   << self.squares.where(x_coord: i, y_coord: j, z_coord: k)
+        end
+
+        self.add_line(column)
+        self.add_line(row)
+        self.add_line(hill)
+      end
+    end
+  end
+
   def init_layers_ary()
     layers = []
     for x in 0..self.size-1
@@ -189,7 +174,7 @@ class Board < ActiveRecord::Base
         for z in 0..self.size-1
           layers[z] ||= []
           layers[z][y] ||= []
-          
+
           layers[z][y] << self.squares.find_by(x_coord: x, y_coord: y,
                                                z_coord: z)
         end
