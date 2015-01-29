@@ -1,7 +1,7 @@
 class Board < ActiveRecord::Base
   # See db/doc_schema.rb for property documentation.
-  has_many :lines
-  has_many :squares
+  has_many :lines, dependent: :destroy
+  has_many :squares, dependent: :destroy
 
   after_create do
     # This save is needed to create board.id
