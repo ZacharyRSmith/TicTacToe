@@ -1,9 +1,9 @@
 <h1>Boards#index</h1>
 
 <div id="<%= @board.id %>" class="board">
-  <% @lyrs.each do |lyr| %>
+  <% @layers.each do |layer| %>
     <div class="layer">
-    <% lyr.each do |row| %>
+      <% layer.each do |row| %>
       <div class="row">
       <% row.each do |square_id| %>
         <% square = @board.squares.find(square_id) %>

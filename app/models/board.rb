@@ -195,18 +195,18 @@ class Board < ActiveRecord::Base
     self.squares_id_ary
   end
 
-  def init_lyrs_ary
-    lyrs = []
+  def init_layers_ary
+    layers = []
     for x in 0..self.size-1
       for y in 0..self.size-1
         for z in 0..self.size-1
-          lyrs[z] ||= []
-          lyrs[z][y] ||= []
-          lyrs[z][y] << self.squares_id_ary[x][y][z]
+          layers[z] ||= []
+          layers[z][y] ||= []
+          layers[z][y] << self.squares_id_ary[x][y][z]
         end
       end
     end
-    lyrs
+    layers
   end
 
   def reset_mid_sqr_lines

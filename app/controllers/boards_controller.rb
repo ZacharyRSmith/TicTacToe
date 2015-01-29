@@ -3,7 +3,7 @@ class BoardsController < ApplicationController
     respond_to do |f|
       if !request.xhr?
         f.html { @board = Board.create!({ size: 3 })
-                 @lyrs = @board.init_lyrs_ary() }
+                 @layers = @board.init_layers_ary() }
         # This "next" is a hacky way to allow this "filter/Guard Pattern".
         next
       end
