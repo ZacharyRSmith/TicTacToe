@@ -11,14 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150128162538) do
+ActiveRecord::Schema.define(version: 20150129150234) do
 
   create_table "boards", force: true do |t|
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
-    t.string   "squares_id_ary"  # A 3D-array that allows access to squares
-      # using coords. E.g., self.squares_id_ary[0][1][2] will return the square
-      # at x-coord = 0, y-coord = 1, z-coord = 2.
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer  "size"  # The size of each side's length.
   end
 

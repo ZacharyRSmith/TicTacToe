@@ -12,14 +12,14 @@ class SquareTest < ActiveSupport::TestCase
   end
 
   test "square.lines should be correct count" do
-    sqr = @board.squares.find(@board.squares_id_ary[0][0][0])
+    sqr = @board.squares.find_by(x_coord: 0, y_coord: 0, z_coord: 0)
     assert_equal 7, sqr.lines.count
   end
 
   test "square should have correct self.ai_priority" do
     board = Board.create!({ size: 3 })
 
-    sqr = board.squares.find(board.squares_id_ary[0][0][0])
+    sqr = board.squares.find_by(x_coord: 0, y_coord: 0, z_coord: 0)
     sqr.set_ai_priority()
     sqr.save
     assert_equal 12, sqr.ai_priority

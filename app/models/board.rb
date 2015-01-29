@@ -2,16 +2,13 @@ class Board < ActiveRecord::Base
   # See db/doc_schema.rb for property documentation.
   has_many :lines
   has_many :squares
-  serialize :squares_id_ary
 
   after_create do
     # This save is needed to create board.id
-    self.save
-    self.gen_squares_id_ary
-    # This save is needed so that self has squares_id_ary
-    self.save
-    self.gen_lines
-    self.set_lines_on_squares
+    self.save()
+    self.gen_squares()
+    self.gen_lines()
+    self.set_lines_on_squares()
     # board#reset_mid_sqr_lines makes middle square un-useable
     # (because it would give excessive advantage to the beginning player)
     self.reset_mid_sqr_lines()
@@ -20,7 +17,7 @@ class Board < ActiveRecord::Base
     self.save
   end
 
-  def get_scores
+  def get_scores()
     marked_lines = self.lines.where!(status: "unmarked")
 
     x_score = 0
@@ -42,186 +39,179 @@ class Board < ActiveRecord::Base
     [x_score, o_score]
   end
 
-  def add_line(squares_id_ary)
+  def add_line(squares_ary)
     line = self.lines.create!({ status: "unmarked" })
-    squares_id_ary.each do |sqr_id|
-      sqr = self.squares.find(sqr_id)
+    squares_ary.each do |sqr|
       line.squares << sqr
     end
   end
 
-  def gen_lines
+  def gen_lines()
     # COLUMNS:
-    for x_coord in 0..self.size-1
-      for z_coord in 0..self.size-1
-        squares_id_ary = []
-        for y_coord in 0..self.size-1
-          squares_id_ary << self.squares_id_ary[x_coord][y_coord][z_coord]
+    for x in 0..self.size-1
+      for z in 0..self.size-1
+        squares_ary = []
+        for y in 0..self.size-1
+          squares_ary << self.squares.where(x_coord: x, y_coord: y, z_coord: z)
         end
 
-        self.add_line(squares_id_ary)
+        self.add_line(squares_ary)
       end
     end
 
     # ROWS:
-    for y_coord in 0..self.size-1
-      for z_coord in 0..self.size-1
-        squares_id_ary = []
-        for x_coord in 0..self.size-1
-          squares_id_ary << self.squares_id_ary[x_coord][y_coord][z_coord]
+    for y in 0..self.size-1
+      for z in 0..self.size-1
+        squares_ary = []
+        for x in 0..self.size-1
+          squares_ary << self.squares.where(x_coord: x, y_coord: y, z_coord: z)
         end
 
-        self.add_line(squares_id_ary)
+        self.add_line(squares_ary)
       end
     end
 
     # HILLS:
-    for x_coord in 0..self.size-1
-      for y_coord in 0..self.size-1
-        squares_id_ary = []
-        for z_coord in 0..self.size-1
-          squares_id_ary << self.squares_id_ary[x_coord][y_coord][z_coord]
+    for x in 0..self.size-1
+      for y in 0..self.size-1
+        squares_ary = []
+        for z in 0..self.size-1
+          squares_ary << self.squares.where(x_coord: x, y_coord: y, z_coord: z)
         end
 
-        self.add_line(squares_id_ary)
+        self.add_line(squares_ary)
       end
     end
 
     # DIAGONALS:
     # On the same z-plane/layer:
-    for z_coord in 0..self.size-1
+    for z in 0..self.size-1
 
-      squares_id_ary = []
-      for x_coord in 0..self.size-1
-        y_coord = x_coord
-        squares_id_ary << self.squares_id_ary[x_coord][y_coord][z_coord]
+      squares_ary = []
+      for x in 0..self.size-1
+        y = x
+        squares_ary << self.squares.where(x_coord: x, y_coord: y, z_coord: z)
       end
-      self.add_line(squares_id_ary)
+      self.add_line(squares_ary)
 
-      squares_id_ary = []
-      for x_coord in (self.size-1).downto(0)
-        y_coord = (self.size-1) - x_coord
-        squares_id_ary << self.squares_id_ary[x_coord][y_coord][z_coord]
+      squares_ary = []
+      for x in (self.size-1).downto(0)
+        y = (self.size-1) - x
+        squares_ary << self.squares.where(x_coord: x, y_coord: y, z_coord: z)
       end
-      self.add_line(squares_id_ary)
+      self.add_line(squares_ary)
     end
 
     # Diagonal-columns at coords (x, 0, 0):
-    for x_coord in 0..self.size-1
-      squares_id_ary = []
-      for i_coord in 0..self.size-1
-        squares_id_ary << self.squares_id_ary[x_coord][i_coord][i_coord]
+    for x in 0..self.size-1
+      squares_ary = []
+      for i in 0..self.size-1
+        squares_ary << self.squares.where(x_coord: x, y_coord: i, z_coord: i)
       end
-      self.add_line(squares_id_ary)
+      self.add_line(squares_ary)
     end
     # Diagonal-columns at coords (x, 0, greatest):
-    for x_coord in 0..self.size-1
-      squares_id_ary = []
-      for z_coord in (self.size-1).downto(0)
-        y_coord = (self.size-1) - z_coord
-        squares_id_ary << self.squares_id_ary[x_coord][y_coord][z_coord]
+    for x in 0..self.size-1
+      squares_ary = []
+      for z in (self.size-1).downto(0)
+        y = (self.size-1) - z
+        squares_ary << self.squares.where(x_coord: x, y_coord: y, z_coord: z)
       end
-      self.add_line(squares_id_ary)
+      self.add_line(squares_ary)
     end
 
     # Diagonal-rows at coords (0, y, 0):
-    for y_coord in 0..self.size-1
-      squares_id_ary = []
-      for i_coord in 0..self.size-1
-        squares_id_ary << self.squares_id_ary[i_coord][y_coord][i_coord]
+    for y in 0..self.size-1
+      squares_ary = []
+      for i in 0..self.size-1
+        squares_ary << self.squares.where(x_coord: i, y_coord: y, z_coord: i)
       end
-      self.add_line(squares_id_ary)
+      self.add_line(squares_ary)
     end
     # Diagonal-rows at coords (0, y, greatest):
-    for y_coord in 0..self.size-1
-      squares_id_ary = []
-      for i_coord in (self.size-1).downto(0)
-        x_coord = (self.size-1) - i_coord
-        squares_id_ary << self.squares_id_ary[x_coord][y_coord][i_coord]
+    for y in 0..self.size-1
+      squares_ary = []
+      for z in (self.size-1).downto(0)
+        x = (self.size-1) - z
+        squares_ary << self.squares.where(x_coord: x, y_coord: y, z_coord: z)
       end
-      self.add_line(squares_id_ary)
+      self.add_line(squares_ary)
     end
 
     # Corner diagonals (diagonals that go through the center of the box):
     # at coords (0,0,0)
-    squares_id_ary = []
-    for i_coord in 0..self.size-1
-      squares_id_ary << self.squares_id_ary[i_coord][i_coord][i_coord]
+    squares_ary = []
+    for i in 0..self.size-1
+      squares_ary << self.squares.where(x_coord: i, y_coord: i, z_coord: i)
     end
-    self.add_line(squares_id_ary)
+    self.add_line(squares_ary)
 
     # at coords (0, 0, greatest)
-    squares_id_ary = []
-    for i_coord in 0..self.size-1
-      z_coord = (self.size-1) - i_coord
-      squares_id_ary << self.squares_id_ary[i_coord][i_coord][z_coord]
+    squares_ary = []
+    for i in 0..self.size-1
+      z = (self.size-1) - i
+      squares_ary << self.squares.where(x_coord: i, y_coord: i, z_coord: z)
     end
-    self.add_line(squares_id_ary)
+    self.add_line(squares_ary)
 
     # at coords (greatest, 0, 0)
-    squares_id_ary = []
-    for i_coord in 0..self.size-1
-      x_coord = (self.size-1) - i_coord
-      squares_id_ary << self.squares_id_ary[x_coord][i_coord][i_coord]
+    squares_ary = []
+    for i in 0..self.size-1
+      x = (self.size-1) - i
+      squares_ary << self.squares.where(x_coord: x, y_coord: i, z_coord: i)
     end
-    self.add_line(squares_id_ary)
+    self.add_line(squares_ary)
 
     # at coords (greatest, 0, greatest)
-    squares_id_ary = []
-    for y_coord in 0..self.size-1
-      i_coord = (self.size-1) - y_coord
-      squares_id_ary << self.squares_id_ary[i_coord][y_coord][i_coord]
+    squares_ary = []
+    for y in 0..self.size-1
+      i = (self.size-1) - y
+      squares_ary << self.squares.where(x_coord: i, y_coord: y, z_coord: i)
     end
-    self.add_line(squares_id_ary)
+    self.add_line(squares_ary)
   end
-
-  def gen_squares_id_ary()
-    self.squares_id_ary = []
-    for x_coord in 0..self.size-1
-      column = []
-      for y_coord in 0..self.size-1
-        hill = []
-        # A "hill" is the line containing all the z_coords
-        # sharing the same x/y-coords.
-        for z_coord in 0..self.size-1
-          square = self.squares.create!({x_coord: x_coord, y_coord: y_coord,
-                                         z_coord: z_coord, mark: "_" })
-          hill << square.id
+  
+  def gen_squares()
+    for x in 0..self.size-1
+      for y in 0..self.size-1
+        for z in 0..self.size-1
+          self.squares.create!({x_coord: x, y_coord: y,
+                                z_coord: z, mark: "_" })
         end
-        column << hill
       end
-      squares_id_ary << column
     end
-    self.squares_id_ary
   end
 
-  def init_layers_ary
+  def init_layers_ary()
     layers = []
     for x in 0..self.size-1
       for y in 0..self.size-1
         for z in 0..self.size-1
           layers[z] ||= []
           layers[z][y] ||= []
-          layers[z][y] << self.squares_id_ary[x][y][z]
+          
+          layers[z][y] << self.squares.find_by(x_coord: x, y_coord: y,
+                                               z_coord: z)
         end
       end
     end
     layers
   end
 
-  def reset_mid_sqr_lines
+  def reset_mid_sqr_lines()
     # If board size-length is uneven, make middle square un-useable
     # (because it would give excessive advantage to the beginning player):
     if self.size % 2 != 0
       mid = (self.size-1) / 2
-      sqr = self.squares.find(self.squares_id_ary[mid][mid][mid])
+      
+      sqr = self.squares.find_by(x_coord: mid, y_coord: mid, z_coord: mid)
       sqr.mark = "~"
       sqr.reset_lines("~")
       sqr.save
     end
   end
 
-  def set_lines_on_squares
+  def set_lines_on_squares()
     self.squares.each do |sqr|
       lines = self.lines.select do |ln|
         ln.squares.any? { |ln_sqr| ln_sqr == sqr }
@@ -229,5 +219,4 @@ class Board < ActiveRecord::Base
       sqr.lines = lines
     end
   end
-
 end
