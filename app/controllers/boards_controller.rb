@@ -14,7 +14,7 @@ class BoardsController < ApplicationController
       x = coords_int_ary[0].to_i
       y = coords_int_ary[1].to_i
       z = coords_int_ary[2].to_i
-      square = @board.squares.find(@board.squares_id_ary[x][y][z])
+      square = @board.squares.find_by(x_coord: x, y_coord: y, z_coord: z)
       if square.mark != "_"
         f.js { render :file => "boards/bad_click.js.erb" }
         # This "next" is a hacky way to allow this "filter/Guard Pattern".
