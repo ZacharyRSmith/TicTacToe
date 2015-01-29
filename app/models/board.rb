@@ -188,7 +188,7 @@ class Board < ActiveRecord::Base
     # (because it would give excessive advantage to the beginning player):
     if self.size % 2 != 0
       mid = (self.size-1) / 2
-      
+
       sqr = self.squares.find_by(x_coord: mid, y_coord: mid, z_coord: mid)
       sqr.mark = "~"
       sqr.reset_lines("~")
